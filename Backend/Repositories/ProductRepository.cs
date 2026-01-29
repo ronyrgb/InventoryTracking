@@ -23,15 +23,7 @@ namespace Backend.Repositories
         // =======================
         public async Task<IEnumerable<Product>> GetAllAsync()
         {
-            try
-            {
-                return await _context.Products.ToListAsync();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Erro ao buscar todos os produtos: {ex.Message}");
-                return new List<Product>();
-            }
+            return await _context.Products.ToListAsync();
         }
 
         // =======================
@@ -39,15 +31,7 @@ namespace Backend.Repositories
         // =======================
         public async Task<Product?> GetByIdAsync(Guid id)
         {
-            try
-            {
-                return await _context.Products.FindAsync(id);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Erro ao buscar produto por ID: {ex.Message}");
-                return null;
-            }
+            return await _context.Products.FindAsync(id);
         }
 
         // =======================
@@ -55,15 +39,7 @@ namespace Backend.Repositories
         // =======================
         public async Task<Product?> GetByCodeAsync(string code)
         {
-            try
-            {
-                return await _context.Products.FirstOrDefaultAsync(p => p.Code == code);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Erro ao buscar produto por código: {ex.Message}");
-                return null;
-            }
+            return await _context.Products.FirstOrDefaultAsync(p => p.Code == code);
         }
 
         // =======================
@@ -71,15 +47,8 @@ namespace Backend.Repositories
         // =======================
         public async Task AddAsync(Product product)
         {
-            try
-            {
-                await _context.Products.AddAsync(product);
-                await _context.SaveChangesAsync();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Erro ao adicionar produto: {ex.Message}");
-            }
+            await _context.Products.AddAsync(product);
+            await _context.SaveChangesAsync();
         }
 
         // =======================
@@ -87,15 +56,8 @@ namespace Backend.Repositories
         // =======================
         public async Task UpdateAsync(Product product)
         {
-            try
-            {
-                _context.Products.Update(product);
-                await _context.SaveChangesAsync();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Erro ao atualizar produto: {ex.Message}");
-            }
+            _context.Products.Update(product);
+            await _context.SaveChangesAsync();
         }
 
         // =======================
@@ -103,15 +65,8 @@ namespace Backend.Repositories
         // =======================
         public async Task DeleteAsync(Product product)
         {
-            try
-            {
-                _context.Products.Remove(product);
-                await _context.SaveChangesAsync();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Erro ao remover produto: {ex.Message}");
-            }
+            _context.Products.Remove(product);
+            await _context.SaveChangesAsync();
         }
     }
 }

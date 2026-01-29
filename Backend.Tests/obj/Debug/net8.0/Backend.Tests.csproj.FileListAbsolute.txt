@@ -147,6 +147,7 @@
 /Users/ronyboccoli/Documents/InventoryTracking/Backend.Tests/obj/Debug/net8.0/Backend.Tests.AssemblyInfoInputs.cache
 /Users/ronyboccoli/Documents/InventoryTracking/Backend.Tests/obj/Debug/net8.0/Backend.Tests.AssemblyInfo.cs
 /Users/ronyboccoli/Documents/InventoryTracking/Backend.Tests/obj/Debug/net8.0/Backend.Tests.csproj.CoreCompileInputs.cache
+/Users/ronyboccoli/Documents/InventoryTracking/Backend.Tests/obj/Debug/net8.0/Backend.Tests.sourcelink.json
 /Users/ronyboccoli/Documents/InventoryTracking/Backend.Tests/obj/Debug/net8.0/Backend..08E81EF2.Up2Date
 /Users/ronyboccoli/Documents/InventoryTracking/Backend.Tests/obj/Debug/net8.0/Backend.Tests.dll
 /Users/ronyboccoli/Documents/InventoryTracking/Backend.Tests/obj/Debug/net8.0/refint/Backend.Tests.dll

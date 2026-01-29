@@ -4,65 +4,72 @@
         <name>Backend</name>
     </assembly>
     <members>
-        <member name="T:Backend.Migrations.InitialCreate">
-            <inheritdoc />
+        <member name="T:Backend.Controllers.AuthController">
+            <summary>
+            Controller responsável pela autenticação de usuários.
+            </summary>
         </member>
-        <member name="M:Backend.Migrations.InitialCreate.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
-            <inheritdoc />
+        <member name="M:Backend.Controllers.AuthController.Login(Backend.Data.DTOs.LoginRequestDto)">
+            <summary>
+            Realiza login de um usuário.
+            </summary>
+            <param name="loginRequest">Objeto contendo email e senha do usuário.</param>
+            <returns>Token de autenticação e informações do usuário.</returns>
+            <response code="200">Login realizado com sucesso.</response>
+            <response code="400">Campos obrigatórios não foram preenchidos.</response>
+            <response code="401">Email ou senha incorretos.</response>
         </member>
-        <member name="M:Backend.Migrations.InitialCreate.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
-            <inheritdoc />
+        <member name="T:Backend.Controllers.UserController">
+            <summary>
+            Controller responsável pelo gerenciamento de usuários.
+            </summary>
         </member>
-        <member name="M:Backend.Migrations.InitialCreate.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
-            <inheritdoc />
+        <member name="M:Backend.Controllers.UserController.GetAll">
+            <summary>
+            Retorna todos os usuários cadastrados.
+            </summary>
         </member>
-        <member name="T:Backend.Migrations.AddCreatedAtToUsers">
-            <inheritdoc />
+        <member name="M:Backend.Controllers.UserController.GetById(System.Guid)">
+            <summary>
+            Retorna um usuário pelo ID.
+            </summary>
+            <param name="id">ID do usuário.</param>
         </member>
-        <member name="M:Backend.Migrations.AddCreatedAtToUsers.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
-            <inheritdoc />
+        <member name="M:Backend.Controllers.UserController.GetByEmail(System.String)">
+            <summary>
+            Retorna um usuário pelo e-mail.
+            </summary>
+            <param name="email">E-mail do usuário.</param>
         </member>
-        <member name="M:Backend.Migrations.AddCreatedAtToUsers.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
-            <inheritdoc />
+        <member name="M:Backend.Controllers.UserController.Create(Backend.Models.User)">
+            <summary>
+            Cria um novo usuário.
+            </summary>
         </member>
-        <member name="M:Backend.Migrations.AddCreatedAtToUsers.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
-            <inheritdoc />
+        <member name="M:Backend.Controllers.UserController.Update(System.Guid,Backend.Models.User)">
+            <summary>
+            Atualiza um usuário existente.
+            </summary>
         </member>
-        <member name="T:Backend.Migrations.AddReturnDateAndNoteToProductLoan">
-            <inheritdoc />
+        <member name="M:Backend.Controllers.UserController.Delete(System.Guid)">
+            <summary>
+            Deleta um usuário pelo ID.
+            </summary>
         </member>
-        <member name="M:Backend.Migrations.AddReturnDateAndNoteToProductLoan.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
-            <inheritdoc />
+        <member name="T:Backend.Data.DTOs.ProductLoanUpdateDto">
+            <summary>
+            DTO usado para atualizar um empréstimo de produto
+            </summary>
         </member>
-        <member name="M:Backend.Migrations.AddReturnDateAndNoteToProductLoan.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
-            <inheritdoc />
+        <member name="P:Backend.Data.DTOs.ProductLoanUpdateDto.Note">
+            <summary>
+            Nota ou observação sobre o empréstimo (opcional)
+            </summary>
         </member>
-        <member name="M:Backend.Migrations.AddReturnDateAndNoteToProductLoan.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="T:Backend.Migrations.UpdateProductLoanModel">
-            <inheritdoc />
-        </member>
-        <member name="M:Backend.Migrations.UpdateProductLoanModel.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="M:Backend.Migrations.UpdateProductLoanModel.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="M:Backend.Migrations.UpdateProductLoanModel.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="T:Backend.Migrations.AddAccessLogTable">
-            <inheritdoc />
-        </member>
-        <member name="M:Backend.Migrations.AddAccessLogTable.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="M:Backend.Migrations.AddAccessLogTable.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="M:Backend.Migrations.AddAccessLogTable.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
-            <inheritdoc />
+        <member name="P:Backend.Data.DTOs.ProductLoanUpdateDto.ReturnDate">
+            <summary>
+            Data de devolução, se o produto for devolvido
+            </summary>
         </member>
     </members>
 </doc>

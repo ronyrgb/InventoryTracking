@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace Backend.Tests
+namespace Backend.Tests.Services
 {
     public class ProductServiceTests
     {
@@ -21,79 +21,65 @@ namespace Backend.Tests
         }
 
         [Fact]
-        public async Task GetAllAsync_RetornaTodosOsProdutos()
+        public async Task GetByIdAsync_ReturnsProduct()
         {
-            // Arrange
+            var productId = Guid.NewGuid();
+            var product = new Product { Id = productId, Code = "P001" };
+
+            _repoMock.Setup(r => r.GetByIdAsync(productId)).ReturnsAsync(product);
+
+            var result = await _service.GetByIdAsync(productId);
+
+            Assert.Equal(productId, result?.Id);
+            Assert.Equal("P001", result?.Code);
+        }
+
+        [Fact]
+        public async Task GetByCodeAsync_ReturnsProduct()
+        {
+            var code = "P001";
+            var product = new Product { Id = Guid.NewGuid(), Code = code };
+
+            _repoMock.Setup(r => r.GetByCodeAsync(code)).ReturnsAsync(product);
+
+            var result = await _service.GetByCodeAsync(code);
+
+            Assert.Equal(code, result?.Code);
+        }
+
+        [Fact]
+        public async Task GetAllAsync_ReturnsAllProducts()
+        {
             var products = new List<Product>
             {
-                new Product { Id = Guid.NewGuid(), Code = "P001" },
-                new Product { Id = Guid.NewGuid(), Code = "P002" }
+                new Product { Id = Guid.NewGuid(), Code = "A" },
+                new Product { Id = Guid.NewGuid(), Code = "B" }
             };
 
             _repoMock.Setup(r => r.GetAllAsync()).ReturnsAsync(products);
 
-            // Act
             var result = await _service.GetAllAsync();
 
-            // Assert
-            Assert.Equal(2, ((List<Product>)result).Count);
+            Assert.Equal(2, result.AsList().Count);
         }
 
         [Fact]
-        public async Task GetByIdAsync_RetornaProdutoExistente()
+        public async Task AddAsync_CallsRepository()
         {
-            // Arrange
-            var productId = Guid.NewGuid();
-            var product = new Product { Id = productId, Code = "P001" };
-            _repoMock.Setup(r => r.GetByIdAsync(productId)).ReturnsAsync(product);
+            var product = new Product { Id = Guid.NewGuid(), Code = "NEW" };
 
-            // Act
-            var result = await _service.GetByIdAsync(productId);
-
-            // Assert
-            Assert.NotNull(result);
-            Assert.Equal(productId, result!.Id);
-        }
-
-        [Fact]
-        public async Task GetByCodeAsync_RetornaProdutoExistente()
-        {
-            // Arrange
-            var code = "P001";
-            var product = new Product { Id = Guid.NewGuid(), Code = code };
-            _repoMock.Setup(r => r.GetByCodeAsync(code)).ReturnsAsync(product);
-
-            // Act
-            var result = await _service.GetByCodeAsync(code);
-
-            // Assert
-            Assert.NotNull(result);
-            Assert.Equal(code, result!.Code);
-        }
-
-        [Fact]
-        public async Task AddAsync_ChamaRepositorioAdd()
-        {
-            // Arrange
-            var product = new Product { Id = Guid.NewGuid(), Code = "P003" };
-
-            // Act
             await _service.AddAsync(product);
 
-            // Assert
             _repoMock.Verify(r => r.AddAsync(product), Times.Once);
         }
 
         [Fact]
-        public async Task UpdateAsync_ChamaRepositorioUpdate()
+        public async Task UpdateAsync_CallsRepository()
         {
-            // Arrange
-            var product = new Product { Id = Guid.NewGuid(), Code = "P004" };
+            var product = new Product { Id = Guid.NewGuid(), Code = "UPD" };
 
-            // Act
             await _service.UpdateAsync(product);
 
-            // Assert
             _repoMock.Verify(r => r.UpdateAsync(product), Times.Once);
         }
     }

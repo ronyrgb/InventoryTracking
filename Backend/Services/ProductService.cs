@@ -18,67 +18,27 @@ namespace Backend.Services
 
         public async Task<Product?> GetByIdAsync(Guid id)
         {
-            try
-            {
-                return await _repo.GetByIdAsync(id);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Erro ao buscar produto por ID ({id}): {ex.Message}");
-                throw;
-            }
+            return await _repo.GetByIdAsync(id);
         }
 
         public async Task<Product?> GetByCodeAsync(string code)
         {
-            try
-            {
-                return await _repo.GetByCodeAsync(code);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Erro ao buscar produto pelo código ({code}): {ex.Message}");
-                throw;
-            }
+            return await _repo.GetByCodeAsync(code);
         }
 
         public async Task<IEnumerable<Product>> GetAllAsync()
         {
-            try
-            {
-                return await _repo.GetAllAsync();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Erro ao buscar todos os produtos: {ex.Message}");
-                throw;
-            }
+            return await _repo.GetAllAsync();
         }
 
         public async Task AddAsync(Product product)
         {
-            try
-            {
-                await _repo.AddAsync(product);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Erro ao adicionar produto ({product.Code}): {ex.Message}");
-                throw;
-            }
+            await _repo.AddAsync(product);
         }
 
         public async Task UpdateAsync(Product product)
         {
-            try
-            {
-                await _repo.UpdateAsync(product);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Erro ao atualizar produto ({product.Code}): {ex.Message}");
-                throw;
-            }
+            await _repo.UpdateAsync(product);
         }
     }
 }

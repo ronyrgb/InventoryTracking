@@ -18,80 +18,32 @@ namespace Backend.Services
 
         public async Task<User?> GetByIdAsync(Guid id)
         {
-            try
-            {
-                return await _repo.GetByIdAsync(id);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Erro ao buscar usuário por ID ({id}): {ex.Message}");
-                throw;
-            }
+            return await _repo.GetByIdAsync(id);
         }
 
         public async Task<User?> GetByEmailAsync(string email)
         {
-            try
-            {
-                return await _repo.GetByEmailAsync(email);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Erro ao buscar usuário pelo email ({email}): {ex.Message}");
-                throw;
-            }
+            return await _repo.GetByEmailAsync(email);
         }
 
         public async Task<IEnumerable<User>> GetAllAsync()
         {
-            try
-            {
-                return await _repo.GetAllAsync();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Erro ao buscar todos os usuários: {ex.Message}");
-                throw;
-            }
+            return await _repo.GetAllAsync();
         }
 
         public async Task AddAsync(User user)
         {
-            try
-            {
-                await _repo.AddAsync(user);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Erro ao adicionar usuário ({user.Email}): {ex.Message}");
-                throw;
-            }
+            await _repo.AddAsync(user);
         }
 
         public async Task UpdateAsync(User user)
         {
-            try
-            {
-                await _repo.UpdateAsync(user);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Erro ao atualizar usuário ({user.Email}): {ex.Message}");
-                throw;
-            }
+            await _repo.UpdateAsync(user);
         }
 
         public async Task DeleteAsync(User user)
         {
-            try
-            {
-                await _repo.DeleteAsync(user);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Erro ao deletar usuário ({user.Email}): {ex.Message}");
-                throw;
-            }
+            await _repo.DeleteAsync(user);
         }
     }
 }

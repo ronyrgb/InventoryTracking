@@ -1,8 +1,6 @@
 using Backend.Models;
 using Backend.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Threading.Tasks;
 
 namespace Backend.Controllers
 {
@@ -10,76 +8,48 @@ namespace Backend.Controllers
     [Route("api/[controller]")]
     public class ProductController : ControllerBase
     {
-        private readonly IProductService _productService;
-        
-        public ProductController(IProductService productService)
+        private readonly IProductService _service;
+
+        public ProductController(IProductService service)
         {
-            _productService = productService;
+            _service = service;
         }
 
-        // GET: api/product
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<ActionResult<IEnumerable<Product>>> GetAll()
         {
-            var products = await _productService.GetAllAsync();
+            var products = await _service.GetAllAsync();
             return Ok(products);
         }
 
-        // GET: api/product/{id}
-        [HttpGet("{id:guid}")]
-        public async Task<IActionResult> GetById(Guid id)
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Product>> GetById(Guid id)
         {
-            var product = await _productService.GetByIdAsync(id);
+            var product = await _service.GetByIdAsync(id);
+
             if (product == null)
-                return NotFound(new { error = "Produto não encontrado" });
+                return NotFound();
 
             return Ok(product);
         }
 
-        // GET: api/product/code/{code}
-        [HttpGet("code/{code}")]
-        public async Task<IActionResult> GetByCode(string code)
-        {
-            var product = await _productService.GetByCodeAsync(code);
-            if (product == null)
-                return NotFound(new { error = "Produto não encontrado" });
-
-            return Ok(product);
-        }
-
-        // POST: api/product
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] Product product)
+        public async Task<ActionResult<Product>> Create(Product product)
         {
-            try
-            {
-                await _productService.AddAsync(product);
-                return CreatedAtAction(nameof(GetById), new { id = product.Id }, product);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new { error = "Erro interno", details = ex.Message });
-            }
+            await _service.AddAsync(product);
+
+            return CreatedAtAction(nameof(GetById), new { id = product.Id }, product);
         }
 
-        // PUT: api/product/{id}
-        [HttpPut("{id:guid}")]
-        public async Task<IActionResult> Update(Guid id, [FromBody] Product product)
+        [HttpPut("{id}")]
+        public async Task<ActionResult<Product>> Update(Guid id, Product product)
         {
-            try
-            {
-                product.Id = id;
-                await _productService.UpdateAsync(product);
-                return Ok(product);
-            }
-            catch (KeyNotFoundException ex)
-            {
-                return NotFound(new { error = ex.Message });
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new { error = "Erro interno", details = ex.Message });
-            }
+            if (id != product.Id)
+                return BadRequest();
+
+            await _service.UpdateAsync(product);
+
+            return Ok(product);
         }
     }
 }

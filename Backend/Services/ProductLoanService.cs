@@ -18,148 +18,68 @@ namespace Backend.Services
 
         public async Task<IEnumerable<ProductLoan>> GetAllAsync()
         {
-            try
-            {
-                return await _repo.GetAllAsync();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Erro ao buscar todos os empréstimos: {ex.Message}");
-                throw;
-            }
+            return await _repo.GetAllAsync();
         }
 
         public async Task<ProductLoan?> GetByIdAsync(Guid id)
         {
-            try
-            {
-                return await _repo.GetByIdAsync(id);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Erro ao buscar empréstimo por ID ({id}): {ex.Message}");
-                throw;
-            }
+            return await _repo.GetByIdAsync(id);
         }
 
         public async Task AddAsync(ProductLoan loan)
         {
-            try
-            {
-                await _repo.AddAsync(loan);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Erro ao adicionar empréstimo: {ex.Message}");
-                throw;
-            }
+            await _repo.AddAsync(loan);
         }
 
         public async Task UpdateAsync(ProductLoan loan)
         {
-            try
-            {
-                await _repo.UpdateAsync(loan);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Erro ao atualizar empréstimo ({loan.Id}): {ex.Message}");
-                throw;
-            }
+            await _repo.UpdateAsync(loan);
         }
 
         public async Task DeleteAsync(ProductLoan loan)
         {
-            try
-            {
-                await _repo.DeleteAsync(loan);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Erro ao deletar empréstimo ({loan.Id}): {ex.Message}");
-                throw;
-            }
+            await _repo.DeleteAsync(loan);
         }
 
         public async Task<IEnumerable<ProductLoan>> GetLoansByProductIdAsync(Guid productId)
         {
-            try
-            {
-                return await _repo.GetLoansByProductIdAsync(productId);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Erro ao buscar empréstimos por produto ({productId}): {ex.Message}");
-                throw;
-            }
+            return await _repo.GetLoansByProductIdAsync(productId);
         }
 
         public async Task<IEnumerable<ProductLoan>> GetActiveLoansAsync()
         {
-            try
-            {
-                return await _repo.GetActiveLoansAsync();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Erro ao buscar empréstimos ativos: {ex.Message}");
-                throw;
-            }
+            return await _repo.GetActiveLoansAsync();
         }
 
         public async Task<IEnumerable<ProductLoan>> GetLoansByUserIdAsync(Guid userId)
         {
-            try
-            {
-                return await _repo.GetLoansByUserIdAsync(userId);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Erro ao buscar empréstimos por usuário ({userId}): {ex.Message}");
-                throw;
-            }
+            return await _repo.GetLoansByUserIdAsync(userId);
         }
 
         public async Task CheckOutAsync(Guid loanId, Guid userId, string? note = null)
         {
-            try
-            {
-                var loan = await _repo.GetByIdAsync(loanId);
-                if (loan == null)
-                    throw new InvalidOperationException("Empréstimo não encontrado.");
+            var loan = await _repo.GetByIdAsync(loanId);
+            if (loan == null)
+                throw new InvalidOperationException("Empréstimo não encontrado.");
 
-                if (loan.ReturnDate == null)
-                    throw new InvalidOperationException("Produto ainda está emprestado.");
+            if (loan.ReturnDate == null)
+                throw new InvalidOperationException("Produto ainda está emprestado.");
 
-                loan.CheckOut(userId, note);
-                await _repo.UpdateAsync(loan);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Erro ao fazer check-out do empréstimo ({loanId}): {ex.Message}");
-                throw;
-            }
+            loan.CheckOut(userId, note);
+            await _repo.UpdateAsync(loan);
         }
 
         public async Task CheckInAsync(Guid loanId)
         {
-            try
-            {
-                var loan = await _repo.GetByIdAsync(loanId);
-                if (loan == null)
-                    throw new InvalidOperationException("Empréstimo não encontrado.");
+            var loan = await _repo.GetByIdAsync(loanId);
+            if (loan == null)
+                throw new InvalidOperationException("Empréstimo não encontrado.");
 
-                if (loan.ReturnDate != null)
-                    throw new InvalidOperationException("Produto já devolvido.");
+            if (loan.ReturnDate != null)
+                throw new InvalidOperationException("Produto já devolvido.");
 
-                loan.CheckIn();
-                await _repo.UpdateAsync(loan);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Erro ao fazer check-in do empréstimo ({loanId}): {ex.Message}");
-                throw;
-            }
+            loan.CheckIn();
+            await _repo.UpdateAsync(loan);
         }
     }
 }

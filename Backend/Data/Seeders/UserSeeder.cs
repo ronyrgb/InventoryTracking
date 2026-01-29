@@ -17,7 +17,7 @@ namespace Backend.Data.Seeders
                 {
                     Id = Guid.NewGuid(),
                     Username = "admin",
-                    Email = "admin@example.com",
+                    Email = "admin@teste.com",
                     PasswordHash = BCrypt.Net.BCrypt.HashPassword("123456"),
                     CreatedAt = DateTime.UtcNow,
                 },

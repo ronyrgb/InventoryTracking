@@ -1,169 +1,93 @@
-using Backend.Data.DTOs;
 using Backend.Models;
 using Backend.Services.Interfaces;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 
 namespace Backend.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize(Roles = "Admin")] // só admin pode manipular empréstimos
+    [Produces("application/json")]
     public class ProductLoanController : ControllerBase
     {
-        private readonly IProductLoanService _loanService;
-        private readonly ILogger<ProductLoanController> _logger;
+        private readonly IProductLoanService _service;
 
-        public ProductLoanController(IProductLoanService loanService, ILogger<ProductLoanController> logger)
+        public ProductLoanController(IProductLoanService service)
         {
-            _loanService = loanService;
-            _logger = logger;
+            _service = service;
         }
 
-        // GET: api/productloan
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<ActionResult<IEnumerable<ProductLoan>>> GetAll()
         {
-            try
-            {
-                var loans = await _loanService.GetAllAsync();
-                return Ok(loans);
-            }
-            catch(Exception ex)
-            {
-                _logger.LogError(ex, "Erro ao buscar todos os empréstimos");
-                return StatusCode(500, new { error = "Erro interno" });
-            }
+            return Ok(await _service.GetAllAsync());
         }
 
-        // GET: api/productloan/{id}
         [HttpGet("{id:guid}")]
-        public async Task<IActionResult> GetById(Guid id)
+        public async Task<ActionResult<ProductLoan>> GetById(Guid id)
         {
+            return Ok(await _service.GetByIdAsync(id));
+        }
+
+        [HttpGet("user/{userId:guid}")]
+        public async Task<ActionResult<IEnumerable<ProductLoan>>> GetByUserId(Guid userId)
+        {
+            return Ok(await _service.GetLoansByUserIdAsync(userId));
+        }
+
+        [HttpGet("product/{productId:guid}")]
+        public async Task<ActionResult<IEnumerable<ProductLoan>>> GetByProductId(Guid productId)
+        {
+            return Ok(await _service.GetLoansByProductIdAsync(productId));
+        }
+
+        [HttpGet("active")]
+        public async Task<ActionResult<IEnumerable<ProductLoan>>> GetActiveLoans()
+        {
+            return Ok(await _service.GetActiveLoansAsync());
+        }
+
+        [HttpPost]
+        public async Task<ActionResult<ProductLoan>> Create([FromBody][Required] ProductLoan loan)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            await _service.AddAsync(loan);
+
+            return CreatedAtAction(nameof(GetById), new { id = loan.Id }, loan);
+        }
+
+[HttpPut("{id:guid}")]
+        public async Task<ActionResult<ProductLoan>> Update(Guid id, ProductLoan loan)
+        {
+            if (id != loan.Id)
+                return BadRequest();
+
             try
             {
-                var loan = await _loanService.GetByIdAsync(id);
-                if(loan == null)
-                    return NotFound(new { error = "Empréstimo não encontrado" });
-
+                await _service.UpdateAsync(loan);
                 return Ok(loan);
             }
-            catch(Exception ex)
+            catch (KeyNotFoundException ex)
             {
-                _logger.LogError(ex, $"Erro ao buscar empréstimo ({id})");
-                return StatusCode(500, new { error = "Erro interno" });
+                return NotFound(new { error = ex.Message });
             }
         }
 
-        // POST: api/productloan
-        [HttpPost]
-        public async Task<IActionResult> Create([FromBody] ProductLoanCreateDto dto)
+        [HttpPost("{id:guid}/checkout")]
+        public async Task<IActionResult> CheckOut(Guid id, [FromQuery][Required] Guid userId, [FromQuery] string? note = null)
         {
-            try
-            {
-                var loan = new ProductLoan
-                {
-                    ProductId = dto.ProductId,
-                    UserId = dto.UserId,
-                    Note = dto.Note
-                };
-
-                await _loanService.AddAsync(loan);
-                return CreatedAtAction(nameof(GetById), new { id = loan.Id }, loan);
-            }
-            catch(Exception ex)
-            {
-                _logger.LogError(ex, "Erro ao criar empréstimo");
-                return StatusCode(500, new { error = "Erro interno" });
-            }
+            await _service.CheckOutAsync(id, userId, note);
+            return NoContent();
         }
 
-        // PUT: api/productloan/checkin/{id}
-        [HttpPut("checkin/{id:guid}")]
+        [HttpPost("{id:guid}/checkin")]
         public async Task<IActionResult> CheckIn(Guid id)
         {
-            try
-            {
-                await _loanService.CheckInAsync(id);
-                return Ok(new { message = "Produto devolvido com sucesso" });
-            }
-            catch(InvalidOperationException ex)
-            {
-                return BadRequest(new { error = ex.Message });
-            }
-            catch(Exception ex)
-            {
-                _logger.LogError(ex, $"Erro ao fazer check-in ({id})");
-                return StatusCode(500, new { error = "Erro interno" });
-            }
+            await _service.CheckInAsync(id);
+            return NoContent();
         }
-
-        // PUT: api/productloan/checkout/{id}
-        [HttpPut("checkout/{id:guid}")]
-        public async Task<IActionResult> CheckOut(Guid id, [FromQuery] Guid userId, [FromQuery] string? note = null)
-        {
-            try
-            {
-                await _loanService.CheckOutAsync(id, userId, note);
-                return Ok(new { message = "Produto emprestado com sucesso" });
-            }
-            catch(InvalidOperationException ex)
-            {
-                return BadRequest(new { error = ex.Message });
-            }
-            catch(Exception ex)
-            {
-                _logger.LogError(ex, $"Erro ao fazer check-out ({id})");
-                return StatusCode(500, new { error = "Erro interno" });
-            }
-        }
-
-        // GET: api/productloan/byproduct/{productId}
-        [HttpGet("byproduct/{productId:guid}")]
-        public async Task<IActionResult> GetByProductId(Guid productId)
-        {
-            try
-            {
-                var loans = await _loanService.GetLoansByProductIdAsync(productId);
-                return Ok(loans);
-            }
-            catch(Exception ex)
-            {
-                _logger.LogError(ex, $"Erro ao buscar empréstimos por produto ({productId})");
-                return StatusCode(500, new { error = "Erro interno" });
-            }
-        }
-
-        // GET: api/productloan/byuser/{userId}
-        [HttpGet("byuser/{userId:guid}")]
-        public async Task<IActionResult> GetByUserId(Guid userId)
-        {
-            try
-            {
-                var loans = await _loanService.GetLoansByUserIdAsync(userId);
-                return Ok(loans);
-            }
-            catch(Exception ex)
-            {
-                _logger.LogError(ex, $"Erro ao buscar empréstimos por usuário ({userId})");
-                return StatusCode(500, new { error = "Erro interno" });
-            }
-        }
-
-        // GET: api/productloan/active
-        [HttpGet("active")]
-        public async Task<IActionResult> GetActiveLoans()
-        {
-            try
-            {
-                var loans = await _loanService.GetActiveLoansAsync();
-                return Ok(loans);
-            }
-            catch(Exception ex)
-            {
-                _logger.LogError(ex, "Erro ao buscar empréstimos ativos");
-                return StatusCode(500, new { error = "Erro interno" });
-            }
-        }
+   
     }
 }
